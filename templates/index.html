@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>KRX 종목 스크리너</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 1200px; margin: 40px auto; padding: 20px; }
+        h1 { color: #333; }
+        .form-box { background: #f5f5f5; padding: 20px; border-radius: 8px; margin-bottom: 30px; }
+        .form-row { display: flex; gap: 20px; flex-wrap: wrap; }
+        .form-group { display: flex; flex-direction: column; gap: 5px; }
+        label { font-weight: bold; font-size: 14px; }
+        input { padding: 8px; border: 1px solid #ccc; border-radius: 4px; width: 150px; }
+        button { padding: 10px 30px; background: #2962ff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        button:hover { background: #0039cb; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #2962ff; color: white; padding: 10px; text-align: left; }
+        td { padding: 8px 10px; border-bottom: 1px solid #eee; }
+        tr:hover { background: #f0f4ff; }
+        .count { margin-bottom: 10px; font-weight: bold; color: #2962ff; }
+        .loading { display: none; color: #666; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <h1>📈 KRX 종목 스크리너</h1>
+
+    <div class="form-box">
+        <form method="POST" onsubmit="document.getElementById('loading').style.display='block'">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>PER 최소</label>
+                    <input type="number" name="per_min" placeholder="예: 0" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label>PER 최대</label>
+                    <input type="number" name="per_max" placeholder="예: 15" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label>ROE 최소 (%)</label>
+                    <input type="number" name="roe_min" placeholder="예: 10" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label>시가총액 최소 (억)</label>
+                    <input type="number" name="cap_min" placeholder="예: 1000">
+                </div>
+            </div>
+            <br>
+            <button type="submit">🔍 검색</button>
+            <span id="loading" class="loading">⏳ 데이터 불러오는 중... (1~2분 소요)</span>
+        </form>
+    </div>
+
+    {% if results is not none %}
+        <div class="count">✅ 총 {{ count }}개 종목</div>
+        <table>
+            <tr>
+                <th>종목명</th>
+                <th>시장</th>
+                <th>현재가</th>
+                <th>PER</th>
+                <th>ROE</th>
+                <th>시가총액(억)</th>
+                <th>외국인비율(%)</th>
+            </tr>
+            {% for row in results %}
+            <tr>
+                <td>{{ row.종목명 }}</td>
+                <td>{{ row.시장 }}</td>
+                <td>{{ row.현재가 | int }}</td>
+                <td>{{ row.PER }}</td>
+                <td>{{ row.ROE }}</td>
+                <td>{{ row.시가총액 | int }}</td>
+                <td>{{ row.외국인비율 }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+</body>
+</html>
