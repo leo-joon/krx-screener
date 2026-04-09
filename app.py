@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 import requests
 import pandas as pd
+from io import StringIO
 
 app = Flask(__name__)
 
@@ -11,7 +12,7 @@ def get_stocks():
             url = f"https://finance.naver.com/sise/sise_market_sum.naver?sosok={sosok}&page={page}"
             headers = {"User-Agent": "Mozilla/5.0"}
             res = requests.get(url, headers=headers)
-            tables = pd.read_html(res.text)
+            tables = pd.read_html(StringIO(res.text))
             df = tables[1]
             df = df.dropna(how="all")
             df = df[df["N"].notna()]
